@@ -1,0 +1,78 @@
+[
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Home",
+      "duration": 34945,
+      "clicks": 3,
+      "uniqueClicks": [
+        "home-click"
+      ],
+      "searches": {
+        "count": 1,
+        "queries": [
+          "asdsad"
+        ]
+      },
+      "filters": {
+        "category": "books",
+        "flags": [
+          "onSale",
+          "inStock"
+        ]
+      },
+      "api": {
+        "count": 0,
+        "avgDuration": 0,
+        "maxDuration": 0
+      },
+      "apis": [],
+      "errors": 0
+    },
+    "sessionId": "7004dd8b-aff0-496b-b025-497278015e3e",
+    "ts": 1775931440679
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Products",
+      "duration": 18593,
+      "clicks": 10,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 2,
+        "avgDuration": 108,
+        "maxDuration": 179
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "https://jsonplaceholder.typicode.com/posts",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 179
+        },
+        {
+          "name": "ADD_TO_CART",
+          "type": "interaction",
+          "url": "/cart",
+          "method": "POST",
+          "status": 404,
+          "success": false,
+          "duration": 37,
+          "error": "Request failed with status code 404"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "7004dd8b-aff0-496b-b025-497278015e3e",
+    "ts": 1775931459274
+  }
+]
