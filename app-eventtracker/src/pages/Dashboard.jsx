@@ -1,10 +1,12 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import productsData from "../data/products";
 import { trackEvent } from "../services/analytics";
+import tracker from "../tracker/trackerInstance";
 
 export default function Dashboard() {
     const navigate = useNavigate();
+    const location = useLocation();
     const hasTrackedPage = useRef(false);
     const hasTrackedImpression = useRef(false);
     const [products, setProducts] = useState(productsData);
@@ -13,6 +15,14 @@ export default function Dashboard() {
     const categories = ["all", ...new Set(productsData.map(p => p.category))];
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];;
     const [cartCount, setCartCount] = useState(cartItems.length);
+
+
+    useEffect(() => {
+        tracker.startPage("Home");
+        return () => tracker.endPage();
+    }, [location.pathname]);
+
+
 
     useEffect(() => {
         if (!hasTrackedPage.current) {
@@ -168,6 +178,7 @@ export default function Dashboard() {
                     <button
                         key={cat}
                         onClick={() => handleFilter(cat)}
+                        data-track = {`Category:${cat}`}
                         style={{
                             marginRight: "10px",
                             marginBottom: "10px",
