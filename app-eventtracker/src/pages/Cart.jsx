@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { trackEvent } from "../services/analytics";
-import { useNavigate } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import tracker from "../tracker/trackerInstance";
+import { apiRequest } from "../api/apiClient";
 export default function Cart() {
     const navigate = useNavigate();
     const [cart, setCart] = useState([]);
@@ -14,6 +15,19 @@ export default function Cart() {
             items: data.reduce((s, i) => s + (i.qty || 1), 0)
         });
     }, []);
+    const location = useLocation();
+
+
+
+    useEffect(() => {
+        tracker.startPage("Cart");
+        apiRequest({
+            baseURL: "http://localhost:5000",
+            url: "/cart"
+        },
+            { name: "CART", type: "interactive" }).then(() => { });
+        return () => tracker.endPage();
+    }, [location.pathname]);
 
     const persist = (nextCart) => {
         setCart(nextCart);

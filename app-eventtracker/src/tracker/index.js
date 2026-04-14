@@ -5,11 +5,17 @@ class Tracker {
     sessionStorage.setItem("sid", this.sessionId);
 
     this.currentPage = null;
+    this.user = config.user || null; // ✅ ADD THIS
+
+    this.isPageActive = false;   // ✅ track active page
+    this.isSending = false;      // ✅ prevent duplicate send
+
 
     this.initClickTracking();
     this.initSearchTracking();
     this.initFilterTracking();
     this.initErrorTracking();
+    this.initLifecycleTracking(); // ✅ ADD THIS
   }
 
   startPage(name) {
@@ -22,10 +28,103 @@ class Tracker {
       apis: [],
       errors: []
     };
+    this.isPageActive = true;   // ✅ mark active
+    this.isSending = false;     // reset
   }
 
+  // endPage() {
+  //   if (!this.currentPage) return;
+
+  //   const page = this.currentPage;
+  //   const durations = page.apis.map(a => a.duration);
+
+  //   const summary = {
+  //     page: page.name,
+  //     duration: Math.round(performance.now() - page.start),
+
+  //     clicks: page.clicks.length,
+  //     uniqueClicks: [...new Set(page.clicks)],
+
+  //     searches: {
+  //       count: page.searches.length,
+  //       queries: page.searches
+  //     },
+
+  //     filters: page.filters,
+
+  //     api: {
+  //       count: page.apis.length,
+  //       avgDuration: durations.length
+  //         ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
+  //         : 0,
+  //       maxDuration: durations.length ? Math.max(...durations) : 0
+  //     },
+
+  //     apis: page.apis,
+  //     errors: page.errors.length
+  //   };
+
+  //   // navigator.sendBeacon(
+  //   //   this.config.endpoint,
+  //   //   JSON.stringify({
+  //   //     eventName: "PAGE_SUMMARY",
+  //   //     data: summary,
+  //   //     sessionId: this.sessionId,
+  //   //     ts: Date.now()
+  //   //   })
+  //   // );
+
+  //   const payload = JSON.stringify({
+  //     eventName: "PAGE_SUMMARY",
+  //     data: summary,
+  //     sessionId: this.sessionId,
+  //     ts: Date.now()
+  //   });
+
+  //   // Try sendBeacon
+  //   let sent = false;
+
+  //   if (navigator.sendBeacon) {
+  //     sent = navigator.sendBeacon(this.config.endpoint, payload);
+  //   }
+
+  //   // Fallback (critical for refresh)
+  //   if (!sent) {
+  //     fetch(this.config.endpoint, {
+  //       method: "POST",
+  //       body: payload,
+  //       keepalive: true,
+  //       headers: {
+  //         "Content-Type": "application/json"
+  //       }
+  //     });
+  //   }
+
+  //   this.currentPage = null;
+  // }
+
+
+  setUser(user) {
+    this.user = user;
+  }
+
+
   endPage() {
+    // ❌ No page
     if (!this.currentPage) return;
+
+    // ❌ Already ended
+    if (this.currentPage.ended) return;
+
+    // ❌ Already sending
+    if (this.isSending) return;
+
+    // ❌ Ignore early lifecycle triggers
+    if (!this.isPageActive) return;
+
+    this.currentPage.ended = true;
+    this.isSending = true;
+    this.isPageActive = false;
 
     const page = this.currentPage;
     const durations = page.apis.map(a => a.duration);
@@ -33,17 +132,13 @@ class Tracker {
     const summary = {
       page: page.name,
       duration: Math.round(performance.now() - page.start),
-
       clicks: page.clicks.length,
       uniqueClicks: [...new Set(page.clicks)],
-
       searches: {
         count: page.searches.length,
         queries: page.searches
       },
-
       filters: page.filters,
-
       api: {
         count: page.apis.length,
         avgDuration: durations.length
@@ -51,20 +146,34 @@ class Tracker {
           : 0,
         maxDuration: durations.length ? Math.max(...durations) : 0
       },
-
       apis: page.apis,
       errors: page.errors.length
     };
 
-    navigator.sendBeacon(
-      this.config.endpoint,
-      JSON.stringify({
-        eventName: "PAGE_SUMMARY",
-        data: summary,
-        sessionId: this.sessionId,
-        ts: Date.now()
-      })
-    );
+    const payload = JSON.stringify({
+      eventName: "PAGE_SUMMARY",
+      data: summary,
+      sessionId: this.sessionId,
+      user: this.user || "",   // ✅ ADD THIS
+      ts: Date.now()
+    });
+
+    let sent = false;
+
+    if (navigator.sendBeacon) {
+      sent = navigator.sendBeacon(this.config.endpoint, payload);
+    }
+
+    if (!sent) {
+      fetch(this.config.endpoint, {
+        method: "POST",
+        body: payload,
+        keepalive: true,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    }
 
     this.currentPage = null;
   }
@@ -143,6 +252,22 @@ class Tracker {
       }
     };
   }
+
+
+  initLifecycleTracking() {
+    window.addEventListener("pagehide", () => {
+      if (this.isPageActive) {
+        this.endPage();
+      }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden" && this.isPageActive) {
+        this.endPage();
+      }
+    });
+  }
+
 }
 
 export default Tracker;

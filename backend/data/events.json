@@ -2,42 +2,771 @@
   {
     "eventName": "PAGE_SUMMARY",
     "data": {
-      "page": "Home",
-      "duration": 34945,
-      "clicks": 3,
-      "uniqueClicks": [
-        "home-click"
-      ],
+      "page": "Dashboard",
+      "duration": 14533,
+      "clicks": 0,
+      "uniqueClicks": [],
       "searches": {
-        "count": 1,
-        "queries": [
-          "asdsad"
-        ]
-      },
-      "filters": {
-        "category": "books",
-        "flags": [
-          "onSale",
-          "inStock"
-        ]
-      },
-      "api": {
         "count": 0,
-        "avgDuration": 0,
-        "maxDuration": 0
+        "queries": []
       },
-      "apis": [],
+      "filters": {},
+      "api": {
+        "count": 3,
+        "avgDuration": 20,
+        "maxDuration": 22
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 21
+        },
+        {
+          "name": "ADD_TO_CART",
+          "type": "interactive",
+          "url": "http://localhost:5000/addtocart",
+          "method": "GET",
+          "status": 404,
+          "success": false,
+          "duration": 22,
+          "error": "Request failed with status code 404"
+        },
+        {
+          "name": "ADD_TO_CART",
+          "type": "interactive",
+          "url": "http://localhost:5000/addtocart",
+          "method": "GET",
+          "status": 404,
+          "success": false,
+          "duration": 17,
+          "error": "Request failed with status code 404"
+        }
+      ],
       "errors": 0
     },
-    "sessionId": "7004dd8b-aff0-496b-b025-497278015e3e",
-    "ts": 1775931440679
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776175658399
   },
   {
     "eventName": "PAGE_SUMMARY",
     "data": {
-      "page": "Products",
-      "duration": 18593,
-      "clicks": 10,
+      "page": "ProductDetail",
+      "duration": 3123,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 57,
+        "maxDuration": 57
+      },
+      "apis": [
+        {
+          "name": "VIEW_PRODUCT",
+          "type": "interactive",
+          "url": "http://localhost:5000/viewproducts",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 57
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776175661524
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 12856,
+      "clicks": 4,
+      "uniqueClicks": [
+        "Category:wearables",
+        "Category:kitchen",
+        "Category:gaming",
+        "Category:all"
+      ],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 40,
+        "maxDuration": 40
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 40
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776175674382
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Cart",
+      "duration": 35757,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 1295,
+        "maxDuration": 1295
+      },
+      "apis": [
+        {
+          "name": "CART",
+          "type": "interactive",
+          "url": "http://localhost:5000/cart",
+          "method": "GET",
+          "status": 0,
+          "success": false,
+          "duration": 1295,
+          "error": "Network Error"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776175710141
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 3189,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 16,
+        "maxDuration": 16
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 16
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776175763592
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Orders",
+      "duration": 3533,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 77,
+        "maxDuration": 77
+      },
+      "apis": [
+        {
+          "name": "ORDERS",
+          "type": "interactive",
+          "url": "http://localhost:5000/orders",
+          "method": "GET",
+          "status": 400,
+          "success": false,
+          "duration": 77,
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776175767127
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 8768,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 46,
+        "maxDuration": 46
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 46
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776175775896
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 39948,
+      "clicks": 4,
+      "uniqueClicks": [
+        "Category:accessories",
+        "Category:wearables",
+        "Category:kitchen",
+        "Category:all"
+      ],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 2,
+        "avgDuration": 25,
+        "maxDuration": 28
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 28
+        },
+        {
+          "name": "ADD_TO_CART",
+          "type": "interactive",
+          "url": "http://localhost:5000/addtocart",
+          "method": "GET",
+          "status": 404,
+          "success": false,
+          "duration": 21,
+          "error": "Request failed with status code 404"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183694288
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "ProductDetail",
+      "duration": 3745,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 36,
+        "maxDuration": 36
+      },
+      "apis": [
+        {
+          "name": "VIEW_PRODUCT",
+          "type": "interactive",
+          "url": "http://localhost:5000/viewproducts",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 36
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183698035
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 50683,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 46,
+        "maxDuration": 46
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 46
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183748719
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Cart",
+      "duration": 3747,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 1134,
+        "maxDuration": 1134
+      },
+      "apis": [
+        {
+          "name": "CART",
+          "type": "interactive",
+          "url": "http://localhost:5000/cart",
+          "method": "GET",
+          "status": 0,
+          "success": false,
+          "duration": 1134,
+          "error": "Network Error"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183752467
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 1485,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 55,
+        "maxDuration": 55
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 55
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183753953
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Checkout",
+      "duration": 949,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 628,
+        "maxDuration": 628
+      },
+      "apis": [
+        {
+          "name": "CHECKOUT",
+          "type": "interactive",
+          "url": "http://localhost:5000/checkouts",
+          "method": "GET",
+          "status": 500,
+          "success": false,
+          "duration": 628,
+          "error": "Request failed with status code 500"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183754904
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 1606,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 19,
+        "maxDuration": 19
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 19
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183756511
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Orders",
+      "duration": 779,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 38,
+        "maxDuration": 38
+      },
+      "apis": [
+        {
+          "name": "ORDERS",
+          "type": "interactive",
+          "url": "http://localhost:5000/orders",
+          "method": "GET",
+          "status": 400,
+          "success": false,
+          "duration": 38,
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183757292
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 4172,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 15,
+        "maxDuration": 15
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 15
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776183761465
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Checkout",
+      "duration": 3138,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 16,
+        "maxDuration": 16
+      },
+      "apis": [
+        {
+          "name": "CHECKOUT",
+          "type": "interactive",
+          "url": "http://localhost:5000/checkouts",
+          "method": "GET",
+          "status": 500,
+          "success": false,
+          "duration": 16,
+          "error": "Request failed with status code 500"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776184320084
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 849,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 32,
+        "maxDuration": 32
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 32
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776184320934
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Orders",
+      "duration": 604,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 24,
+        "maxDuration": 24
+      },
+      "apis": [
+        {
+          "name": "ORDERS",
+          "type": "interactive",
+          "url": "http://localhost:5000/orders",
+          "method": "GET",
+          "status": 400,
+          "success": false,
+          "duration": 24,
+          "error": "Request failed with status code 400"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776184321540
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 1770,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 897,
+        "maxDuration": 897
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 897
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776184323311
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Checkout",
+      "duration": 648,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 23,
+        "maxDuration": 23
+      },
+      "apis": [
+        {
+          "name": "CHECKOUT",
+          "type": "interactive",
+          "url": "http://localhost:5000/checkouts",
+          "method": "GET",
+          "status": 500,
+          "success": false,
+          "duration": 23,
+          "error": "Request failed with status code 500"
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776184323960
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 4957,
+      "clicks": 0,
       "uniqueClicks": [],
       "searches": {
         "count": 0,
@@ -46,33 +775,34 @@
       "filters": {},
       "api": {
         "count": 2,
-        "avgDuration": 108,
-        "maxDuration": 179
+        "avgDuration": 189,
+        "maxDuration": 341
       },
       "apis": [
         {
           "name": "GET_PRODUCTS",
           "type": "initial",
-          "url": "https://jsonplaceholder.typicode.com/posts",
+          "url": "http://localhost:5000/products",
           "method": "GET",
           "status": 200,
           "success": true,
-          "duration": 179
+          "duration": 341
         },
         {
           "name": "ADD_TO_CART",
-          "type": "interaction",
-          "url": "/cart",
-          "method": "POST",
+          "type": "interactive",
+          "url": "http://localhost:5000/addtocart",
+          "method": "GET",
           "status": 404,
           "success": false,
-          "duration": 37,
+          "duration": 36,
           "error": "Request failed with status code 404"
         }
       ],
       "errors": 0
     },
-    "sessionId": "7004dd8b-aff0-496b-b025-497278015e3e",
-    "ts": 1775931459274
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "uday123",
+    "ts": 1776184328919
   }
 ]

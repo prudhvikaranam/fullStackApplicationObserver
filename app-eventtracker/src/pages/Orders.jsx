@@ -1,10 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { trackEvent } from "../services/analytics";
-
+import tracker from "../tracker/trackerInstance";
+import { apiRequest } from "../api/apiClient";
 export default function Orders() {
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
+
+    const location = useLocation();
+
+
+
+    useEffect(() => {
+        tracker.startPage("Orders");
+        apiRequest({
+            baseURL: "http://localhost:5000",
+            url: "/orders"
+        },
+            { name: "ORDERS", type: "interactive" }).then(() => { });
+        return () => tracker.endPage();
+    }, [location.pathname]);
+
 
     useEffect(() => {
         const raw = JSON.parse(localStorage.getItem("orders") || "[]");
@@ -24,13 +40,15 @@ export default function Orders() {
                 <h2>My Orders</h2>
                 <p>No orders found.</p>
                 <div style={{ marginTop: 12 }}>
-                    <button onClick={() => navigate("/dashboard")} style={{ marginRight: 8,  marginTop: "5px", marginLeft: "10px",
-                                padding: "8px 12px",
-                                borderRadius: 8,
-                                // background: "#71a9f1ff",
-                                color: "black",
-                                border: "1px solid blue",
-                                cursor: "pointer" }}>
+                    <button onClick={() => navigate("/dashboard")} style={{
+                        marginRight: 8, marginTop: "5px", marginLeft: "10px",
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        // background: "#71a9f1ff",
+                        color: "black",
+                        border: "1px solid blue",
+                        cursor: "pointer"
+                    }}>
                         Back to dashboard
                     </button>
                     <button onClick={clearOrders} disabled>
@@ -46,13 +64,15 @@ export default function Orders() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                 <h2 style={{ margin: 0 }}>My Orders</h2>
                 <div>
-                    <button onClick={() => navigate("/dashboard")} style={{ marginRight: 8,  marginTop: "5px", marginLeft: "10px",
-                                padding: "8px 12px",
-                                borderRadius: 8,
-                                // background: "#71a9f1ff",
-                                color: "black",
-                                border: "1px solid blue",
-                                cursor: "pointer" }}>
+                    <button onClick={() => navigate("/dashboard")} style={{
+                        marginRight: 8, marginTop: "5px", marginLeft: "10px",
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        // background: "#71a9f1ff",
+                        color: "black",
+                        border: "1px solid blue",
+                        cursor: "pointer"
+                    }}>
                         Back to dashboard
                     </button>
                     <button onClick={clearOrders} style={{ background: "#ef4444", color: "#fff", border: "none", padding: "8px 12px", borderRadius: 6 }}>

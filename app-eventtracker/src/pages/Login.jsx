@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import tracker from "../tracker/trackerInstance";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function Login() {
 
     if (isValidUser) {
       email ? localStorage.setItem("user", email) : localStorage.setItem("user", 'Guest');
+      tracker.setUser(localStorage.getItem("user"));
       navigate("/dashboard");
     } else {
       alert("Invalid username or key");

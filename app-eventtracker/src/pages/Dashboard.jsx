@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import productsData from "../data/products";
 import { trackEvent } from "../services/analytics";
 import tracker from "../tracker/trackerInstance";
+import { apiRequest } from "../api/apiClient";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -17,10 +18,32 @@ export default function Dashboard() {
     const [cartCount, setCartCount] = useState(cartItems.length);
 
 
+    // useEffect(() => {
+    //     tracker.startPage("Dashboard");
+    //     apiRequest({
+    //         baseURL: "http://localhost:5000",
+    //         url: "/products"
+    //     },
+    //         { name: "GET_PRODUCTS", type: "initial" }).then(() => { });
+    //     return () => tracker.endPage();
+    // }, [location.pathname]);
+
+
     useEffect(() => {
-        tracker.startPage("Home");
-        return () => tracker.endPage();
-    }, [location.pathname]);
+        tracker.startPage("Dashboard");
+
+        apiRequest(
+            {
+                baseURL: "http://localhost:5000",
+                url: "/products"
+            },
+            { name: "GET_PRODUCTS", type: "initial" }
+        );
+
+        return () => {
+            tracker.endPage();
+        };
+    }, []); // ✅ IMPORTANT: empty dependency array to run only once on mount
 
 
 
@@ -55,6 +78,14 @@ export default function Dashboard() {
     };
 
     const addToCart = (product) => {
+
+        apiRequest({
+            baseURL: "http://localhost:5000",
+            url: "/addtocart",
+        },
+            { name: "ADD_TO_CART", type: "interactive" }).then(() => { });
+
+
         const existing = JSON.parse(localStorage.getItem("cart")) || [];
 
         const index = existing.findIndex((item) => item.id === product.id);
@@ -178,7 +209,7 @@ export default function Dashboard() {
                     <button
                         key={cat}
                         onClick={() => handleFilter(cat)}
-                        data-track = {`Category:${cat}`}
+                        data-track={`Category:${cat}`}
                         style={{
                             marginRight: "10px",
                             marginBottom: "10px",

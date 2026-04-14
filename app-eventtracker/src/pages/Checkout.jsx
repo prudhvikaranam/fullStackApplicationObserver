@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { trackEvent } from "../services/analytics";
-
+import tracker from "../tracker/trackerInstance";
+import { apiRequest } from "../api/apiClient";
 export default function Checkout() {
     const navigate = useNavigate();
     const [cart, setCart] = useState([]);
@@ -13,8 +14,21 @@ export default function Checkout() {
         email: "",
         address: ""
     });
+    const location = useLocation();
 
     const DEFAULT_ITEM_PRICE = 100;
+
+
+        useEffect(() => {
+        tracker.startPage("Checkout");
+        apiRequest({
+            baseURL: "http://localhost:5000",
+            url: "/checkouts"
+        },
+            { name: "CHECKOUT", type: "interactive" }).then(() => { });
+        return () => tracker.endPage();
+    }, [location.pathname]);
+
 
     useEffect(() => {
         const data = JSON.parse(localStorage.getItem("cart")) || [];

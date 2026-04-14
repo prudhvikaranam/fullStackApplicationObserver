@@ -1,187 +1,390 @@
-import React, { useEffect, useState } from "react";
-import MetricsCard from "../components/MetricsCard";
-import ActivityFeed from "../components/ActivityFeed";
-import InsightCard from "../components/InsightCard";
+import { useEffect, useState } from "react";
+import "./styles.css";
 import Chatbot from "../components/Chatbot";
 
-export default function Dashboard() {
-  const [analyticsData, setAnalyticsData] = useState({
-    funnel: [],
-    insights: [],
-    activities: [],
-    totalUsers: 0,
-    totalOrders: 0,
-    revenue: 0,
-    conversionRate: 0
-  });
+export default function App() {
+  const [pages, setPages] = useState([]);
+  const [selectedPage, setSelectedPage] = useState(null);
+  const [expanded, setExpanded] = useState({});
+  const [selectedUser, setSelectedUser] = useState("ALL");
 
   useEffect(() => {
-    let mounted = true;
-    const url =
-      "https://8080-edfeacdaaaeceedaedbacbbbaecafbaeaaad.premiumproject.examly.io/api/events/analytics/summary";
-
-    (async () => {
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-
-        if (!mounted) return;
-
-        const funnelArray = data.funnel
-          ? Object.entries(data.funnel).map(([step, users]) => ({
-            step,
-            users
-          }))
-          : [];
-
-        const transformed = {
-          funnel: funnelArray,
-          insights: [
-            `Top category: ${data.topCategory ?? "n/a"}`,
-            `Drop off: ${data.dropOff ?? "n/a"}%`
-          ],
-          activities: [
-            {
-              id: "top-category",
-              text: `Top category: ${data.topCategory ?? "n/a"}`
-            },
-            {
-              id: "drop-off",
-              text: `Drop off rate: ${data.dropOff ?? "n/a"}%`
-            }
-          ],
-          totalUsers: data.totalUsers ?? 0,
-          totalOrders: data.totalOrders ?? 0,
-          revenue: data.revenue ?? 0,
-          conversionRate: data.conversionRate ?? 0
-        };
-
-        setAnalyticsData(transformed);
-      } catch (err) {
-        console.error("Failed to fetch analytics summary:", err);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
+    fetch("http://localhost:5000/analytics")
+      .then((res) => res.json())
+      .then((data) => setPages(data.pages));
   }, []);
 
+  const toggle = (key) => {
+    setExpanded((prev) => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  // 🔥 Extract unique users
+  const users = [
+    "ALL",
+    ...new Set(
+      pages.flatMap((p) =>
+        p.timeline.map((t) => t.user || "anonymous")
+      )
+    )
+  ];
+
+  // 🔥 Filter pages based on user
+  const filteredPages =
+    selectedUser === "ALL"
+      ? pages
+      : pages.map((p) => ({
+        ...p,
+        timeline: p.timeline.filter(
+          (t) => t.user === selectedUser
+        )
+      }));
+
+  const getClickBreakdown = (clicks) => {
+    const map = {};
+    clicks.forEach((c) => (map[c] = (map[c] || 0) + 1));
+    return map;
+  };
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h2
-        style={{
-          margin: 0,
-          fontSize: "1.5rem",
-          fontWeight: 700,
-          background:
-            "linear-gradient(90deg,#2563eb 0%, #06b6d4 50%, #0ea5a4 100%)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          color: "transparent"
-        }}
-      >
-        Analytics Dashboard
-      </h2>
+    <div className="container">
+      <h1>📊 Analytics Dashboard</h1>
 
-      <br />
-
-      {/* Metrics */}
-      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-        <MetricsCard title="Users" value={analyticsData.totalUsers} index={0} />
-        <MetricsCard title="Orders" value={analyticsData.totalOrders} index={1} />
-        <MetricsCard title="Revenue" value={`₹${analyticsData.revenue}`} index={2} />
-        <MetricsCard title="Conversion" value={`${analyticsData.conversionRate}%`} index={3} />
-      </div>
-
-      {/* Funnel */}
-      <div style={{ marginBottom: "20px" }}>
-        <h3>Funnel</h3>
-
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "16px",
-            background: "#041158",
-            padding: "24px",
-            borderRadius: "5px"
+      {/* 🔥 USER FILTER */}
+      <div className="filter-bar">
+        <label>👤 Filter by User:</label>
+        <select
+          value={selectedUser}
+          onChange={(e) => {
+            setSelectedUser(e.target.value);
+            setSelectedPage(null); // reset view
           }}
         >
-          {analyticsData.funnel.map((f, idx) => {
-            const prevUsers = analyticsData.funnel[idx - 1]?.users;
-
-            const drop =
-              prevUsers && prevUsers > 0
-                ? (((prevUsers - f.users) / prevUsers) * 100).toFixed(1)
-                : null;
-
-            return (
-              <div
-                key={f.step}
-                className="funnel-card"
-                style={{
-                  flex: "1 1 220px",
-                  minWidth: "200px",
-                  maxWidth: "260px",
-                  padding: "16px",
-                  borderRadius: "12px",
-                  background: "#ffffff",
-                  color: "#111",
-                  border: "1px solid #e5e7eb",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between"
-                }}
-              >
-                <div style={{ fontWeight: 600, fontSize: "14px" }}>
-                  {f.step.replaceAll("_", " ")}
-                </div>
-
-                <div
-                  style={{
-                    fontSize: "1.5rem",
-                    fontWeight: 800,
-                    marginTop: "10px"
-                  }}
-                >
-                  {f.users}
-                </div>
-
-                {drop && (
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#ef4444",
-                      marginTop: "6px"
-                    }}
-                  >
-                    {/* {drop}% drop */}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Insights + Activity */}
-      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-        <div style={{ flex: 1 }}>
-          <h3>AI Insights</h3>
-          {analyticsData.insights.map((insight) => (
-            <InsightCard key={insight} text={insight} />
+          {users.map((u, i) => (
+            <option key={i} value={u}>
+              {u}
+            </option>
           ))}
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <ActivityFeed data={analyticsData.activities} />
-        </div>
+        </select>
       </div>
+      <br />
+      <br />
+      <hr />
+
+        {/* CARDS */}
+      <div className="card-grid">
+        {filteredPages.map((p) => {
+          const totalVisits = p.timeline.length;
+
+          return (
+            <div
+              key={p.page}
+              className="card"
+              onClick={() => setSelectedPage(p)}
+            >
+              <h2>📄 {p.page}</h2>
+
+              <p>👁 Visits: {totalVisits}</p>
+              <p>🖱 Clicks: {p.totalClicks}</p>
+
+              <hr />
+
+              <p>🔌 APIs: {p.api.total}</p>
+              <p className="success">✅ {p.api.success}</p>
+              <p className="failure">❌ {p.api.failure}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* DETAIL VIEW */}
+      {selectedPage && (
+        <div className="timeline">
+          <div className="timeline-header">
+            <h2>📍 {selectedPage.page}</h2>
+            <button onClick={() => setSelectedPage(null)}>❌</button>
+          </div>
+
+          {selectedPage.timeline
+            .filter(
+              (t) =>
+                selectedUser === "ALL" ||
+                t.user === selectedUser
+            )
+            .map((t, index) => {
+              const clickKey = `click-${index}`;
+              const apiKey = `api-${index}`;
+
+              return (
+                <div key={index} className="timeline-item">
+                  <p>🕒 {new Date(t.ts).toLocaleString()}</p>
+                  <p>👤 {t.user}</p>
+
+                  {/* CLICKS */}
+                  <p
+                    className="clickable"
+                    onClick={() => toggle(clickKey)}
+                  >
+                    🖱 Clicks: {t.clicks}{" "}
+                    {t.clicks > 0 &&
+                      (expanded[clickKey] ? "⬆️" : "⬇️")}
+                  </p>
+
+                  {expanded[clickKey] && (
+                    <div className="sub-block">
+                      {Object.entries(
+                        getClickBreakdown(t.uniqueClicks)
+                      ).map(([k, v]) => (
+                        <p key={k}>
+                          🎯 {k} → {v}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* APIs */}
+                  <p
+                    className="clickable"
+                    onClick={() => toggle(apiKey)}
+                  >
+                    🔌 APIs: {t.apis.length}{" "}
+                    {t.apis.length > 0 &&
+                      (expanded[apiKey] ? "⬆️" : "⬇️")}
+                  </p>
+
+                  {expanded[apiKey] && (
+                    <div className="api-block">
+                      {t.apis.map((api, i) => (
+                        <div key={i} className="api-item">
+                          <p>🔗 {api.name}</p>
+                          <p>Status: {api.status}</p>
+                          <p>⏱ {api.duration} ms</p>
+                          <p
+                            className={
+                              api.success
+                                ? "success"
+                                : "failure"
+                            }
+                          >
+                            {api.success
+                              ? "✅ Success"
+                              : "❌ Failure"}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      )}
+
+
+
+
 
       <Chatbot />
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+// import { useEffect, useState } from "react";
+// import "./styles.css";
+
+// export default function App() {
+//   const [pages, setPages] = useState([]);
+//   const [selectedPage, setSelectedPage] = useState(null);
+//   const [expanded, setExpanded] = useState({});
+
+//   useEffect(() => {
+//     fetch("http://localhost:5000/analytics")
+//       .then((res) => res.json())
+//       .then((data) => setPages(data.pages));
+//   }, []);
+
+//   const toggle = (key) => {
+//     setExpanded((prev) => ({
+//       ...prev,
+//       [key]: !prev[key]
+//     }));
+//   };
+
+//   const getClickBreakdown = (clicks) => {
+//     const map = {};
+//     clicks.forEach((c) => (map[c] = (map[c] || 0) + 1));
+//     return map;
+//   };
+
+//   return (
+//     <div className="container">
+//       <h1>📊 Analytics Dashboard</h1>
+
+//       {/* CARDS */}
+//       <div className="card-grid">
+//         {pages.map((p) => (
+//           <div
+//             key={p.page}
+//             className="card"
+//             onClick={() => setSelectedPage(p)}
+//           >
+//             <h2>📄 {p.page}</h2>
+
+//             <p>👁 {p.totalVisits} Visits</p>
+//             <p>👤 {p.users} Users</p>
+//             <p>🖱 {p.totalClicks} Clicks</p>
+//             <p>🧭 {p.sessions} Sessions</p>
+
+//             <hr />
+
+//             <p>🔌 APIs: {p.api.total}</p>
+//             <p>⚡ Avg: {p.api.avgDuration} ms</p>
+
+//             <p className="success">✅ {p.api.success}</p>
+//             <p className="failure">❌ {p.api.failure}</p>
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* DETAIL VIEW */}
+//       {selectedPage && (
+//         <div className="timeline">
+//           <div className="timeline-header">
+//             <h2>📍 {selectedPage.page} Timeline</h2>
+//             <button onClick={() => setSelectedPage(null)}>❌ Close</button>
+//           </div>
+
+//           {selectedPage.timeline.map((t, index) => {
+//             const clickKey = `click-${index}`;
+//             const searchKey = `search-${index}`;
+//             const filterKey = `filter-${index}`;
+//             const apiKey = `api-${index}`;
+
+//             return (
+//               <div key={index} className="timeline-item">
+//                 <p>🕒 {new Date(t.ts).toLocaleString()}</p>
+//                 <p>👤 {t.user}</p>
+//                 <p>🧑‍💻 {t.sessionId}</p>
+
+//                 {/* CLICKS */}
+//                 <p
+//                   className="clickable"
+//                   onClick={() => toggle(clickKey)}
+//                 >
+//                   🖱 Clicks: {t.clicks}{" "}
+//                   {t.clicks > 0 && (
+//                     <span>{expanded[clickKey] ? "⬆️" : "⬇️"}</span>
+//                   )}
+//                 </p>
+
+//                 {expanded[clickKey] && (
+//                   <div className="sub-block">
+//                     {Object.entries(
+//                       getClickBreakdown(t.uniqueClicks)
+//                     ).map(([k, v]) => (
+//                       <p key={k}>
+//                         🎯 {k} → {v}
+//                       </p>
+//                     ))}
+//                   </div>
+//                 )}
+
+//                 {/* SEARCHES */}
+//                 <p
+//                   className="clickable"
+//                   onClick={() => toggle(searchKey)}
+//                 >
+//                   🔍 Searches: {t.searches.count || 0}{" "}
+//                   {t.searches.count > 0 && (
+//                     <span>{expanded[searchKey] ? "⬆️" : "⬇️"}</span>
+//                   )}
+//                 </p>
+
+//                 {expanded[searchKey] && (
+//                   <div className="sub-block">
+//                     {t.searches.queries.map((q, i) => (
+//                       <p key={i}>🔎 {q}</p>
+//                     ))}
+//                   </div>
+//                 )}
+
+//                 {/* FILTERS */}
+//                 <p
+//                   className="clickable"
+//                   onClick={() => toggle(filterKey)}
+//                 >
+//                   🧩 Filters:{" "}
+//                   {Object.keys(t.filters).length}{" "}
+//                   {Object.keys(t.filters).length > 0 && (
+//                     <span>{expanded[filterKey] ? "⬆️" : "⬇️"}</span>
+//                   )}
+//                 </p>
+
+//                 {expanded[filterKey] && (
+//                   <div className="sub-block">
+//                     {Object.entries(t.filters).map(([k, v]) => (
+//                       <p key={k}>
+//                         🏷 {k}:{" "}
+//                         {Array.isArray(v) ? v.join(", ") : v}
+//                       </p>
+//                     ))}
+//                   </div>
+//                 )}
+
+//                 {/* APIs */}
+//                 <p
+//                   className="clickable"
+//                   onClick={() => toggle(apiKey)}
+//                 >
+//                   🔌 APIs: {t.apis.length}{" "}
+//                   {t.apis.length > 0 && (
+//                     <span>{expanded[apiKey] ? "⬆️" : "⬇️"}</span>
+//                   )}
+//                 </p>
+
+//                 {expanded[apiKey] && (
+//                   <div className="api-block">
+//                     {t.apis.map((api, i) => (
+//                       <div key={i} className="api-item">
+//                         <p className="api-name">🔗 {api.name}</p>
+//                         <p>📡 {api.method}</p>
+//                         <p>Status: {api.status}</p>
+//                         <p>⏱ {api.duration} ms</p>
+
+//                         <p
+//                           className={
+//                             api.success ? "success" : "failure"
+//                           }
+//                         >
+//                           {api.success ? "✅ Success" : "❌ Failure"}
+//                         </p>
+
+//                         {api.error && (
+//                           <p className="error">
+//                             ⚠ {api.error}
+//                           </p>
+//                         )}
+//                       </div>
+//                     ))}
+//                   </div>
+//                 )}
+//               </div>
+//             );
+//           })}
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+

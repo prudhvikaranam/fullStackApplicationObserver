@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  padding: 20px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.card:hover {
+  background: #334155;
+  transform: scale(1.03);
+}
+
+.timeline {
+  margin-top: 30px;
+  background: #020617;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeline-item {
+  background: #f1f5f9;
+  color: black;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+/* clickable rows */
+.clickable {
+  cursor: pointer;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+/* sub blocks */
+.sub-block {
+  margin-top: 8px;
+  padding: 8px;
+  background: #e2e8f0;
+  border-radius: 6px;
+}
+
+/* API */
+.api-block {
+  margin-top: 10px;
+}
+
+.api-item {
+  background: white;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border-left: 4px solid #3b82f6;
+}
+
+.api-name {
+  font-weight: bold;
+}
+
+/* status */
+.success {
+  color: green;
+  font-weight: bold;
+}
+
+.failure {
+  color: red;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}

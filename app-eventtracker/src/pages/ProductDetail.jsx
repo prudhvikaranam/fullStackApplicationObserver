@@ -1,9 +1,26 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import products from "../data/products";
+import { useEffect } from "react";
+import tracker from "../tracker/trackerInstance";
+import { apiRequest } from "../api/apiClient";
 
 export default function ProductDetail() {
     const { id } = useParams();
     const product = products.find((p) => p.id === id);
+
+    const location = useLocation();
+
+
+    useEffect(() => {
+        tracker.startPage("ProductDetail");
+        apiRequest({
+            baseURL: "http://localhost:5000",
+            url: "/viewproducts"
+        },
+            { name: "VIEW_PRODUCT", type: "interactive" }).then(() => { });
+        return () => tracker.endPage();
+    }, [location.pathname]);
+
 
 
     return (
