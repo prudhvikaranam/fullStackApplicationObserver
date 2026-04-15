@@ -1,24 +1,58 @@
 import fs from "fs";
 
+// function applyFilters(data, query) {
+//   let filtered = data.filter(e => e.eventName === "PAGE_SUMMARY");
+//   console.log('Initial filtered query', query);
+//   if (query.page && query.page !== "*") {
+//     filtered = filtered.filter(
+//       e => e.data.page.toLowerCase() === query.page.toLowerCase()
+//     );
+//   }
+//   console.log('filtered data', filtered);
+
+
+
+//   if (query.user) {
+//     filtered = filtered.filter(
+//       e => e.user.toLowerCase() === query.user.toLowerCase()
+//     );
+//   }
+
+//   if (query.timeRange?.from && query.timeRange?.to) {
+//     filtered = filtered.filter(
+//       e => e.ts >= query.timeRange.from && e.ts <= query.timeRange.to
+//     );
+//   }
+
+//   return filtered;
+// }
+
+
 function applyFilters(data, query) {
   let filtered = data.filter(e => e.eventName === "PAGE_SUMMARY");
-  console.log('Initial filtered data count:', query);
+
+  // 1. Page Filter
   if (query.page && query.page !== "*") {
     filtered = filtered.filter(
-      e => e.data.page.toLowerCase() === query.page.toLowerCase()
+      e => e.data.page && e.data.page.toLowerCase() === query.page.toLowerCase()
     );
   }
 
-  if (query.user) {
+  // 2. User Filter - ONLY filter if query.user is a non-null string
+  if (query.user && typeof query.user === 'string') {
     filtered = filtered.filter(
-      e => e.user.toLowerCase() === query.user.toLowerCase()
+      e => e.user && e.user.toLowerCase() === query.user.toLowerCase()
     );
   }
 
-  if (query.timeRange?.from && query.timeRange?.to) {
-    filtered = filtered.filter(
-      e => e.ts >= query.timeRange.from && e.ts <= query.timeRange.to
-    );
+  // 3. Time Filter - Handle partial ranges
+  if (query.timeRange) {
+    if (query.timeRange.from) {
+      filtered = filtered.filter(e => e.ts >= query.timeRange.from);
+    }
+    if (query.timeRange.to) {
+      filtered = filtered.filter(e => e.ts <= query.timeRange.to);
+    }
   }
 
   return filtered;
@@ -70,7 +104,40 @@ const metricHandlers = {
       page: e.data.page,
       ts: e.ts,
       duration: e.data.duration
-    }))
+    })),
+
+    interactions: (data) => {
+    const counts = {};
+    data.forEach(e => {
+      (e.data.uniqueClicks || []).forEach(click => {
+        counts[click] = (counts[click] || 0) + 1;
+      });
+    });
+    return counts;
+  },
+
+  // New: Extract search terms
+  searchTerms: (data) => {
+    let allQueries = [];
+    data.forEach(e => {
+      if (e.data.searches?.queries) {
+        allQueries.push(...e.data.searches.queries);
+      }
+    });
+    return { count: allQueries.length, terms: allQueries };
+  },
+
+  apiStats: (data) => {
+    let total = 0, success = 0, failure = 0, slowCalls = 0;
+    data.forEach(e => {
+      (e.data.apis || []).forEach(api => {
+        total++;
+        if (api.success) success++; else failure++;
+        if (api.duration > 1000) slowCalls++; // Flag calls over 1s
+      });
+    });
+    return { total, success, failure, slowCalls };
+    }
 };
 
 export function runQuery(query) {
@@ -78,9 +145,16 @@ export function runQuery(query) {
 
   const filtered = applyFilters(data, query);
 
+  console.log('query metric for metric', query.metric);
   const handler = metricHandlers[query.metric];
 
+
+  console.log('Handler for metric', metricHandlers[query.metric], handler);
+
   if (!handler) return { error: "Unknown metric" };
+
+
+  console.log('filtered data in run query', filtered);
 
   return handler(filtered);
 }

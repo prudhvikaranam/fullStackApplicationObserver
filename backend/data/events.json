@@ -804,5 +804,109 @@
     "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
     "user": "uday123",
     "ts": 1776184328919
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 5765,
+      "clicks": 1,
+      "uniqueClicks": [
+        "Category:footwear"
+      ],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 13,
+        "maxDuration": 13
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 13
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776235984072
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Cart",
+      "duration": 25265,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 20014,
+        "maxDuration": 20014
+      },
+      "apis": [
+        {
+          "name": "CART",
+          "type": "interactive",
+          "url": "http://localhost:5000/cart",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 20014
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776236737072
+  },
+  {
+    "eventName": "PAGE_SUMMARY",
+    "data": {
+      "page": "Dashboard",
+      "duration": 19434,
+      "clicks": 0,
+      "uniqueClicks": [],
+      "searches": {
+        "count": 0,
+        "queries": []
+      },
+      "filters": {},
+      "api": {
+        "count": 1,
+        "avgDuration": 31,
+        "maxDuration": 31
+      },
+      "apis": [
+        {
+          "name": "GET_PRODUCTS",
+          "type": "initial",
+          "url": "http://localhost:5000/products",
+          "method": "GET",
+          "status": 200,
+          "success": true,
+          "duration": 31
+        }
+      ],
+      "errors": 0
+    },
+    "sessionId": "d65073e2-5fc6-4343-85f8-b960bce1920a",
+    "user": "prudhvi123",
+    "ts": 1776237859087
   }
 ]

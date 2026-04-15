@@ -347,7 +347,9 @@ app.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     const rawQuery = await parseQuery(message);
+    console.log('Raw query from parseQuery:', rawQuery);
     const query = normalizeQuery(rawQuery);
+    console.log('Normalized query:', query);
 
     const result = runQuery(query);
 

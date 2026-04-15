@@ -15,11 +15,12 @@ User question: "${question}"
 Data: ${JSON.stringify(result)}
 `;
 
-  const res = await axios.post("http://localhost:11434/api/generate", {
+const res = await axios.post("http://localhost:11434/api/generate", {
     model: "llama3",
     prompt,
-    stream: false
-  });
+    stream: false,
+    format: "json" // Forces JSON output
+});
 
   return res.data.response;
 }

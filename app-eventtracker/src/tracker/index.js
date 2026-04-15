@@ -127,11 +127,22 @@ class Tracker {
     this.isPageActive = false;
 
     const page = this.currentPage;
+    const duration = performance.now() - page.start;
     const durations = page.apis.map(a => a.duration);
+
+
+    const hasInteraction =
+      page.clicks.length > 0 ||
+      page.searches.length > 0 ||
+      (page.filters && Object.keys(page.filters).length > 0);
+
+    if (duration < 10000 && !hasInteraction) {
+      return; 
+    }
 
     const summary = {
       page: page.name,
-      duration: Math.round(performance.now() - page.start),
+      duration: Math.round(duration),
       clicks: page.clicks.length,
       uniqueClicks: [...new Set(page.clicks)],
       searches: {
