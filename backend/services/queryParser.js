@@ -4,75 +4,124 @@ import { extractJSON } from "../utils/extractJSON.js";
 export async function parseQuery(message) {
  
 
-//   const prompt = `
-// You are an expert Analytics Query Generator. Your job is to translate user questions into a structured JSON query based on the provided data schema.
+// //   const prompt = `
+// // You are an expert Analytics Query Generator. Your job is to translate user questions into a structured JSON query based on the provided data schema.
 
-// ### DATA SCHEMA REFERENCE:
-// - eventName: "PAGE_SUMMARY"
-// - user: (e.g., "uday123", "prudhvi123")
-// - data.page: ("Dashboard", "Cart", "Orders", "ProductDetail", "Checkout")
-// - data.apis: Array of API calls (status 200 = success, others = failure)
-// - data.clicks: Number of interactions
-// - ts: Epoch timestamp in milliseconds
+// // ### DATA SCHEMA REFERENCE:
+// // - eventName: "PAGE_SUMMARY"
+// // - user: (e.g., "uday123", "prudhvi123")
+// // - data.page: ("Dashboard", "Cart", "Orders", "ProductDetail", "Checkout")
+// // - data.apis: Array of API calls (status 200 = success, others = failure)
+// // - data.clicks: Number of interactions
+// // - ts: Epoch timestamp in milliseconds
 
-// ### OUTPUT FORMAT (STRICT JSON ONLY):
+// // ### OUTPUT FORMAT (STRICT JSON ONLY):
+// // {
+// //   "page": "Specific page name or '*'",
+// //   "metric": "sessions | clicks | duration | apis | apiStats | user | timeline",
+// //   "user": "Exact user ID string or null",
+// //   "timeRange": {
+// //     "from": <number_ms_or_null>,
+// //     "to": <number_ms_or_null>
+// //   }
+// // }
+
+// // ### RULES:
+// // 1. **Metric Mapping**: 
+// //    - "What did [user] do?" or "activity" -> metric: "timeline"
+// //    - "How many people" or "who" -> metric: "user"
+// //    - "Performance" or "errors" -> metric: "apiStats"
+// // 2. **User Matching**: Normalize user IDs to lowercase (e.g., "UDay123" -> "uday123").
+// // 3. **Time Logic**: 
+// //    - Current Reference Time: ${Date.now()}
+// //    - If the user says "last hour", calculate (Current - 3600000).
+// //    - If no time is mentioned, set "from" and "to" to null.
+// // 4. **No Prose**: Do not include explanations or markdown.
+
+// // User: "${message}"
+// // JSON Result:`;
+
+// const prompt = `
+// You are a translation layer between natural language and a JSON Analytics Schema. 
+// Your goal is to extract intent into a valid JSON object.
+
+// ### SCHEMA:
 // {
-//   "page": "Specific page name or '*'",
+//   "page": "Dashboard | Cart | Orders | Checkout | *",
 //   "metric": "sessions | clicks | duration | apis | apiStats | user | timeline",
-//   "user": "Exact user ID string or null",
-//   "timeRange": {
-//     "from": <number_ms_or_null>,
-//     "to": <number_ms_or_null>
-//   }
+//   "user": "string | null",
+//   "timeRange": { "from": timestamp_ms | null, "to": timestamp_ms | null }
 // }
 
-// ### RULES:
-// 1. **Metric Mapping**: 
-//    - "What did [user] do?" or "activity" -> metric: "timeline"
-//    - "How many people" or "who" -> metric: "user"
-//    - "Performance" or "errors" -> metric: "apiStats"
-// 2. **User Matching**: Normalize user IDs to lowercase (e.g., "UDay123" -> "uday123").
-// 3. **Time Logic**: 
-//    - Current Reference Time: ${Date.now()}
-//    - If the user says "last hour", calculate (Current - 3600000).
-//    - If no time is mentioned, set "from" and "to" to null.
-// 4. **No Prose**: Do not include explanations or markdown.
+// ### MAPPING RULES:
+// - "What did [X] do?" -> metric: "timeline", user: "X"
+// - "How is Dashboard performing?" -> metric: "apiStats", page: "Dashboard"
+// - "Who used the app?" -> metric: "user", page: "*"
+// - "Footwear searches" -> metric: "clicks", page: "Dashboard" (Context: footwear is a click event in data)
+
+// ### REFERENCE DATA:
+// - Current Time (ms): ${Date.now()}
+// - Valid Pages: Dashboard, Cart, Orders, Checkout
+// - User IDs: uday123, prudhvi123
+
+// ### EXAMPLES:
+// User: "Show me clicks for prudhvi123 on the Cart page"
+// JSON: {"page": "Cart", "metric": "clicks", "user": "prudhvi123", "timeRange": null}
+
+// User: "What happened in the last 10 minutes?"
+// JSON: {"page": "*", "metric": "timeline", "user": null, "timeRange": {"from": ${Date.now() - 600000}, "to": ${Date.now()}}}
 
 // User: "${message}"
-// JSON Result:`;
+// JSON:`;
 
-const prompt = `
-You are a translation layer between natural language and a JSON Analytics Schema. 
-Your goal is to extract intent into a valid JSON object.
+
+  const prompt = `
+You are a STRICT JSON generator for analytics queries.
+
+Return ONLY valid JSON. No explanation.
 
 ### SCHEMA:
 {
-  "page": "Dashboard | Cart | Orders | Checkout | *",
-  "metric": "sessions | clicks | duration | apis | apiStats | user | timeline",
+  "page": "Dashboard | Cart | Orders | Checkout | ProductDetail | *",
+  "metric": "sessions | clicks | duration | apis | apiStats | user | timeline | mostVisitedPage | mostActiveUser",
   "user": "string | null",
-  "timeRange": { "from": timestamp_ms | null, "to": timestamp_ms | null }
+  "timeRange": { "from": number | null, "to": number | null }
 }
 
-### MAPPING RULES:
-- "What did [X] do?" -> metric: "timeline", user: "X"
-- "How is Dashboard performing?" -> metric: "apiStats", page: "Dashboard"
-- "Who used the app?" -> metric: "user", page: "*"
-- "Footwear searches" -> metric: "clicks", page: "Dashboard" (Context: footwear is a click event in data)
+### IMPORTANT MAPPINGS:
 
-### REFERENCE DATA:
-- Current Time (ms): ${Date.now()}
-- Valid Pages: Dashboard, Cart, Orders, Checkout
-- User IDs: uday123, prudhvi123
+- "most visited page" → metric: "mostVisitedPage", page: "*"
+- "which page is used most" → metric: "mostVisitedPage"
+- "top page" → metric: "mostVisitedPage"
+
+- "who used app most" → metric: "mostActiveUser"
+- "top user" → metric: "mostActiveUser"
+
+- "API errors / failures / performance" → metric: "apiStats"
+- "list APIs" → metric: "apis"
+
+- "what did user X do" → metric: "timeline", user: "X"
+- "clicks" → metric: "clicks"
+- "duration / time spent" → metric: "duration"
+
+### RULES:
+- page = "*" if not mentioned
+- user = null if not mentioned
+- timeRange = null if not mentioned
+- NEVER return arrays
+- NEVER return explanation
 
 ### EXAMPLES:
-User: "Show me clicks for prudhvi123 on the Cart page"
-JSON: {"page": "Cart", "metric": "clicks", "user": "prudhvi123", "timeRange": null}
 
-User: "What happened in the last 10 minutes?"
-JSON: {"page": "*", "metric": "timeline", "user": null, "timeRange": {"from": ${Date.now() - 600000}, "to": ${Date.now()}}}
+User: "what is the most visited page?"
+JSON: {"page":"*","metric":"mostVisitedPage","user":null,"timeRange":null}
+
+User: "who is the most active user?"
+JSON: {"page":"*","metric":"mostActiveUser","user":null,"timeRange":null}
 
 User: "${message}"
-JSON:`;
+JSON:
+`;
 
   const res = await axios.post("http://localhost:11434/api/generate", {
     model: "llama3",

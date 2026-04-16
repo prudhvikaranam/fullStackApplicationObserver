@@ -19,7 +19,7 @@ export default function ProductDetail() {
         },
             { name: "VIEW_PRODUCT", type: "interactive" }).then(() => { });
         return () => tracker.endPage();
-    }, [location.pathname]);
+    }, []);
 
 
 

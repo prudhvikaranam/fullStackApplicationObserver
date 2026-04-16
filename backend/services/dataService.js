@@ -106,7 +106,7 @@ const metricHandlers = {
       duration: e.data.duration
     })),
 
-    interactions: (data) => {
+  interactions: (data) => {
     const counts = {};
     data.forEach(e => {
       (e.data.uniqueClicks || []).forEach(click => {
@@ -129,15 +129,61 @@ const metricHandlers = {
 
   apiStats: (data) => {
     let total = 0, success = 0, failure = 0, slowCalls = 0;
+
     data.forEach(e => {
       (e.data.apis || []).forEach(api => {
         total++;
-        if (api.success) success++; else failure++;
-        if (api.duration > 1000) slowCalls++; // Flag calls over 1s
+        if (api.success) success++;
+        else failure++;
+
+        if (api.duration > 1000) slowCalls++;
       });
     });
+
     return { total, success, failure, slowCalls };
+  },
+
+  mostVisitedPage: (data) => {
+    const map = {};
+
+    data.forEach(e => {
+      const page = e.data.page;
+      map[page] = (map[page] || 0) + 1;
+    });
+
+    let maxPage = null;
+    let maxCount = 0;
+
+    for (const page in map) {
+      if (map[page] > maxCount) {
+        maxCount = map[page];
+        maxPage = page;
+      }
     }
+
+    return { page: maxPage, visits: maxCount };
+  },
+
+  mostActiveUser: (data) => {
+    const map = {};
+
+    data.forEach(e => {
+      const user = e.user || "unknown";
+      map[user] = (map[user] || 0) + 1;
+    });
+
+    let maxUser = null;
+    let maxCount = 0;
+
+    for (const user in map) {
+      if (map[user] > maxCount) {
+        maxCount = map[user];
+        maxUser = user;
+      }
+    }
+
+    return { user: maxUser, sessions: maxCount };
+  },
 };
 
 export function runQuery(query) {

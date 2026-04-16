@@ -19,7 +19,7 @@ export default function Checkout() {
     const DEFAULT_ITEM_PRICE = 100;
 
 
-        useEffect(() => {
+    useEffect(() => {
         tracker.startPage("Checkout");
         apiRequest({
             baseURL: "http://localhost:5000",
@@ -27,7 +27,7 @@ export default function Checkout() {
         },
             { name: "CHECKOUT", type: "interactive" }).then(() => { });
         return () => tracker.endPage();
-    }, [location.pathname]);
+    }, []);
 
 
     useEffect(() => {

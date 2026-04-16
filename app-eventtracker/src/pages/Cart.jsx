@@ -27,7 +27,7 @@ export default function Cart() {
         },
             { name: "CART", type: "interactive" }).then(() => { });
         return () => tracker.endPage();
-    }, [location.pathname]);
+    }, []);
 
     const persist = (nextCart) => {
         setCart(nextCart);

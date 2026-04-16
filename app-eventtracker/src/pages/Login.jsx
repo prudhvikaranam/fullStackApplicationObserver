@@ -61,7 +61,7 @@ export default function Login() {
             <input
               id="key"
               className="form-input"
-              type="key"
+              type="password"
               value={key}
               onChange={(e) => setkey(e.target.value)}
               required

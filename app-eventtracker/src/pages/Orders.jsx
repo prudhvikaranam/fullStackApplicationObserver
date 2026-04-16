@@ -19,7 +19,7 @@ export default function Orders() {
         },
             { name: "ORDERS", type: "interactive" }).then(() => { });
         return () => tracker.endPage();
-    }, [location.pathname]);
+    }, []);
 
 
     useEffect(() => {

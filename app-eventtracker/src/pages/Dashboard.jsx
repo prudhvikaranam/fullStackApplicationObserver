@@ -43,7 +43,7 @@ export default function Dashboard() {
         return () => {
             tracker.endPage();
         };
-    }, []); // ✅ IMPORTANT: empty dependency array to run only once on mount
+    }, []); 
 
 
 
@@ -81,7 +81,7 @@ export default function Dashboard() {
 
         apiRequest({
             baseURL: "http://localhost:5000",
-            url: "/addtocart",
+            url: "/cart",
         },
             { name: "ADD_TO_CART", type: "interactive" }).then(() => { });
 

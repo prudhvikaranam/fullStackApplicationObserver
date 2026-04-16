@@ -12,7 +12,7 @@ export async function apiRequest(config, meta = {}) {
 
   try {
     const res = await api({
-      baseURL: config.baseURL,   // ✅ dynamic
+      baseURL: config.baseURL,   
       url: config.url,
       method: config.method || "GET",
       headers: config.headers || {},

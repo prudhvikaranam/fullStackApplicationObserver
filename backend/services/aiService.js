@@ -2,28 +2,56 @@ import axios from "axios";
 
 export async function generateAnswer(question, result) {
   const prompt = `
-You are an analytics assistant.
+You are a product analytics assistant.
 
-Convert the data into a human readable insight.
+Convert the result into a clear, human-readable answer.
 
 Rules:
 - Be concise
-- Highlight key numbers
-- Mention page/user if relevant
+- Highlight key insights
+- If result is empty → say "No data available"
+- If metric is mostVisitedPage → clearly mention page and count
+- If metric is mostActiveUser → mention user and sessions
 
 User question: "${question}"
 Data: ${JSON.stringify(result)}
 `;
 
-const res = await axios.post("http://localhost:11434/api/generate", {
+  const res = await axios.post("http://localhost:11434/api/generate", {
     model: "llama3",
     prompt,
-    stream: false,
-    format: "json" // Forces JSON output
-});
+    stream: false
+  });
 
   return res.data.response;
 }
+
+
+
+// export async function generateAnswer(question, result) {
+//   const prompt = `
+// You are an analytics assistant.
+
+// Convert the data into a human readable insight.
+
+// Rules:
+// - Be concise
+// - Highlight key numbers
+// - Mention page/user if relevant
+
+// User question: "${question}"
+// Data: ${JSON.stringify(result)}
+// `;
+
+// const res = await axios.post("http://localhost:11434/api/generate", {
+//     model: "llama3",
+//     prompt,
+//     stream: false,
+//     format: "json" // Forces JSON output
+// });
+
+//   return res.data.response;
+// }
 
 
 

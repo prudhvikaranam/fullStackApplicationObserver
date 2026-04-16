@@ -5,17 +5,17 @@ class Tracker {
     sessionStorage.setItem("sid", this.sessionId);
 
     this.currentPage = null;
-    this.user = config.user || null; // ✅ ADD THIS
+    this.user = config.user || null;
 
-    this.isPageActive = false;   // ✅ track active page
-    this.isSending = false;      // ✅ prevent duplicate send
+    this.isPageActive = false;
+    this.isSending = false;
 
 
     this.initClickTracking();
     this.initSearchTracking();
     this.initFilterTracking();
     this.initErrorTracking();
-    this.initLifecycleTracking(); // ✅ ADD THIS
+    this.initLifecycleTracking();
   }
 
   startPage(name) {
@@ -28,81 +28,10 @@ class Tracker {
       apis: [],
       errors: []
     };
-    this.isPageActive = true;   // ✅ mark active
-    this.isSending = false;     // reset
+    this.isPageActive = true;
+    this.isSending = false;
+    this.navigationStart = performance.now();
   }
-
-  // endPage() {
-  //   if (!this.currentPage) return;
-
-  //   const page = this.currentPage;
-  //   const durations = page.apis.map(a => a.duration);
-
-  //   const summary = {
-  //     page: page.name,
-  //     duration: Math.round(performance.now() - page.start),
-
-  //     clicks: page.clicks.length,
-  //     uniqueClicks: [...new Set(page.clicks)],
-
-  //     searches: {
-  //       count: page.searches.length,
-  //       queries: page.searches
-  //     },
-
-  //     filters: page.filters,
-
-  //     api: {
-  //       count: page.apis.length,
-  //       avgDuration: durations.length
-  //         ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
-  //         : 0,
-  //       maxDuration: durations.length ? Math.max(...durations) : 0
-  //     },
-
-  //     apis: page.apis,
-  //     errors: page.errors.length
-  //   };
-
-  //   // navigator.sendBeacon(
-  //   //   this.config.endpoint,
-  //   //   JSON.stringify({
-  //   //     eventName: "PAGE_SUMMARY",
-  //   //     data: summary,
-  //   //     sessionId: this.sessionId,
-  //   //     ts: Date.now()
-  //   //   })
-  //   // );
-
-  //   const payload = JSON.stringify({
-  //     eventName: "PAGE_SUMMARY",
-  //     data: summary,
-  //     sessionId: this.sessionId,
-  //     ts: Date.now()
-  //   });
-
-  //   // Try sendBeacon
-  //   let sent = false;
-
-  //   if (navigator.sendBeacon) {
-  //     sent = navigator.sendBeacon(this.config.endpoint, payload);
-  //   }
-
-  //   // Fallback (critical for refresh)
-  //   if (!sent) {
-  //     fetch(this.config.endpoint, {
-  //       method: "POST",
-  //       body: payload,
-  //       keepalive: true,
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       }
-  //     });
-  //   }
-
-  //   this.currentPage = null;
-  // }
-
 
   setUser(user) {
     this.user = user;
@@ -110,16 +39,12 @@ class Tracker {
 
 
   endPage() {
-    // ❌ No page
     if (!this.currentPage) return;
 
-    // ❌ Already ended
     if (this.currentPage.ended) return;
 
-    // ❌ Already sending
     if (this.isSending) return;
 
-    // ❌ Ignore early lifecycle triggers
     if (!this.isPageActive) return;
 
     this.currentPage.ended = true;
@@ -131,13 +56,25 @@ class Tracker {
     const durations = page.apis.map(a => a.duration);
 
 
+    const perf = performance.getEntriesByType("navigation")[0];
+
+    const performanceMetrics = perf
+      ? {
+        dns: Math.round(perf.domainLookupEnd - perf.domainLookupStart),
+        tcp: Math.round(perf.connectEnd - perf.connectStart),
+        ttfb: Math.round(perf.responseStart - perf.requestStart),
+        domLoad: Math.round(perf.domContentLoadedEventEnd - perf.startTime),
+        pageLoad: Math.round(perf.loadEventEnd - perf.startTime)
+      }
+      : {};
+
     const hasInteraction =
       page.clicks.length > 0 ||
       page.searches.length > 0 ||
       (page.filters && Object.keys(page.filters).length > 0);
 
-    if (duration < 10000 && !hasInteraction) {
-      return; 
+    if (duration < 5000 && !hasInteraction) {
+      return;
     }
 
     const summary = {
@@ -158,14 +95,15 @@ class Tracker {
         maxDuration: durations.length ? Math.max(...durations) : 0
       },
       apis: page.apis,
-      errors: page.errors.length
+      errors: page.errors.length,
+      performance: performanceMetrics
     };
 
     const payload = JSON.stringify({
       eventName: "PAGE_SUMMARY",
       data: summary,
       sessionId: this.sessionId,
-      user: this.user || "",   // ✅ ADD THIS
+      user: this.user || "",
       ts: Date.now()
     });
 
@@ -185,6 +123,7 @@ class Tracker {
         }
       });
     }
+
 
     this.currentPage = null;
   }
